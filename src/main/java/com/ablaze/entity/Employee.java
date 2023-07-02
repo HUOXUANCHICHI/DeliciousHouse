@@ -2,7 +2,10 @@ package com.ablaze.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -11,6 +14,9 @@ import java.time.LocalDateTime;
  * @author ablaze
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
