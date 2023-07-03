@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * 配置MP的分页插件
  *
- * @Author: ablaze
+ * @author ablaze
  * @Date: 2023/07/02/9:47
  */
 @Configuration

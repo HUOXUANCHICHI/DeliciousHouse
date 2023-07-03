@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import java.util.List;
 
 /**
- * @Author: ablaze
+ * @author ablaze
  * @Date: 2023/07/01/11:00
  */
 @Slf4j

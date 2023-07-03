@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
- * @Author: ablaze
+ * @author ablaze
  * @Date: 2023/07/02/9:22
  */
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
@@ -18,7 +18,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @Slf4j
 public class GlobalExceptionHandler {
     /**
-     * 异常处理方法
+     * 异常处理方法 插入重复
      * @return
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -32,5 +32,15 @@ public class GlobalExceptionHandler {
 
         }
         return R.error("未知错误");
+    }
+    /**
+     * 异常处理方法 关联菜品删除
+     * @return
+     */
+    @ExceptionHandler(CustomException.class)
+    public R<String> exceptionHandler(CustomException ex) {
+        log.error(ex.getMessage());
+
+        return R.error(ex.getMessage());
     }
 }

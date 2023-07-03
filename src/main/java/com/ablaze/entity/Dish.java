@@ -8,41 +8,59 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
+ 菜品
  * @author ablaze
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Employee implements Serializable {
+public class Dish implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
-
-    private String username;
-
-    private String name;
-
-    private String password;
-
-    private String phone;
-
-    private String sex;
     /**
-     * 身份证号码
+     * 菜品名称
      */
-    private String idNumber;
-
+    private String name;
+    /**
+     * 菜品分类id
+     */
+    private Long categoryId;
+    /**
+     * 菜品价格
+     */
+    private BigDecimal price;
+    /**
+     * 商品码
+     */
+    private String code;
+    /**
+     * 图片
+     */
+    private String image;
+    /**
+     * 描述信息
+     */
+    private String description;
+    /**
+     * 0 停售 1 起售
+     */
     private Integer status;
+    /**
+     * 顺序
+     */
+    private Integer sort;
 
-    @TableField(fill = FieldFill.INSERT) // 插入时填充字段
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    @TableField(fill = FieldFill.INSERT_UPDATE) // 插入和更新时填充字段
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     @TableField(fill = FieldFill.INSERT)
@@ -50,5 +68,9 @@ public class Employee implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+    /**
+     * 是否删除
+     */
+//    private Integer isDeleted;
 
 }
