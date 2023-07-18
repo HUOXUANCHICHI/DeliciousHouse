@@ -76,6 +76,11 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         return dishDto;
     }
 
+    /**
+     * 更新菜品信息及口味信息
+     * @param dishDto
+     * @return
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean updateWithFlavor(DishDto dishDto) {
@@ -96,5 +101,23 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
         return dishFlavorService.saveBatch(flavors);
 
+    }
+
+    /**
+     * 删除菜品信息及口味信息
+     * @param id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean remove(Long id) {
+
+        //清理当前菜品对应口味数据--dish_flavor表的delete操作
+        LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(DishFlavor::getDishId, id);
+
+        dishFlavorService.remove(queryWrapper);
+
+        return super.removeById(id);
     }
 }

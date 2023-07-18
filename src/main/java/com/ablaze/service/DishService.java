@@ -24,5 +24,17 @@ public interface DishService extends IService<Dish> {
      */
     DishDto getByIdWithFlavor(Long id);
 
+    /**
+     * 更新菜品信息及口味信息
+     * @param dishDto
+     * @return
+     */
     boolean updateWithFlavor(DishDto dishDto);
+
+    /**
+     * 删除菜品信息及口味信息
+     * @param id
+     * @return
+     */
+    boolean remove(Long id);
 }

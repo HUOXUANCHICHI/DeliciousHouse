@@ -114,10 +114,50 @@ public class DishController {
         return R.error("查询菜品和口味信息失败");
     }
 
+    /**
+     * 更新菜品信息及口味信息
+     * @param dishDto
+     * @return
+     */
     @PutMapping
     public R<String> update(@RequestBody DishDto dishDto) {
         log.info(dishDto.toString());
         boolean flag = dishService.updateWithFlavor(dishDto);
         return flag ? R.success("新增菜品成功") : R.error("新增菜品失败");
+    }
+
+    /**
+     * 根据id修改菜品的状态status(停售和起售)
+     * @param status 0停售，1起售。
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> updateStatus(@PathVariable Integer status, Long[] ids) {
+        log.info("根据id修改菜品的状态:{},id为:{}", status, ids);
+        boolean flag = false;
+
+        for (Long id : ids) {
+            Dish dish = dishService.getById(id);
+            dish.setStatus(status);
+            flag = dishService.updateById(dish);
+        }
+
+        return flag ? R.success("修改状态成功") : R.error("修改状态失败");
+    }
+
+    /**
+     * 删除菜品信息及口味信息
+     * @param ids
+     * @return
+     */
+    @DeleteMapping()
+    public R<String> delete(Long[] ids) {
+        log.info("根据id删除菜品的id为:{}", ids);
+        boolean flag = false;
+        for (Long id : ids) {
+            flag = dishService.remove(id);
+        }
+        return flag ? R.success("修改删除成功") : R.error("修改删除失败");
     }
 }

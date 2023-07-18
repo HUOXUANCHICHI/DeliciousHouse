@@ -71,12 +71,12 @@
             ></el-table-column>
             <el-table-column label="售价">
                 <template slot-scope="scope">
-                    <span style="margin-right: 10px;">￥{{ scope.row.price / 100 }}</span>
+                    <span style="margin-right: 10px;">￥{{scope.row.price / 100}}</span>
                 </template>
             </el-table-column>
             <el-table-column label="售卖状态">
                 <template slot-scope="scope">
-                    <span style="margin-right: 10px;">{{ scope.row.status === '0' ? '停售' : '启售' }}</span>
+                    <span style="margin-right: 10px;">{{String(scope.row.status) === '0' ? '停售' : '启售'}}</span>
                 </template>
             </el-table-column>
             <el-table-column
@@ -104,7 +104,7 @@
                             class="blueBug"
                             @click="statusHandle(scope.row)"
                     >
-                        {{ scope.row.status === '0' ? '启售' : '停售' }}
+                        {{String(scope.row.status) === '0' ? '启售' : '停售'}}
                     </el-button>
                     <el-button
                             type="text"
@@ -243,7 +243,7 @@
                 }).then(() => {
                     // 起售停售---批量起售停售接口
                     dishStatusByStatus(this.dishState).then(res => {
-                        if (res.code === 1) {
+                        if (String(res.code) === '1') {
                             this.$message.success('菜品状态已经更改成功！')
                             this.handleQuery()
                         } else {
