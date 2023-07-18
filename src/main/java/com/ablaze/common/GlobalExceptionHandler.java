@@ -19,6 +19,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class GlobalExceptionHandler {
     /**
      * 异常处理方法 插入重复
+     *
      * @return
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
@@ -33,8 +34,10 @@ public class GlobalExceptionHandler {
         }
         return R.error("未知错误");
     }
+
     /**
      * 异常处理方法 关联菜品删除
+     *
      * @return
      */
     @ExceptionHandler(CustomException.class)
