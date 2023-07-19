@@ -1,5 +1,6 @@
 package com.ablaze.service.impl;
 
+import com.ablaze.common.CustomException;
 import com.ablaze.dto.DishDto;
 import com.ablaze.entity.Dish;
 import com.ablaze.entity.DishFlavor;
@@ -78,6 +79,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 更新菜品信息及口味信息
+     *
      * @param dishDto
      * @return
      */
@@ -105,19 +107,33 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 删除菜品信息及口味信息
-     * @param id
+     *
+     * @param ids
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean remove(Long id) {
+    public boolean deleteWithFlavor(List<Long> ids) {
+
+        //查询菜品状态，确定是否可用删除
+        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishLambdaQueryWrapper.in(Dish::getId, ids);
+        dishLambdaQueryWrapper.eq(Dish::getStatus, 1);
+        long count = this.count(dishLambdaQueryWrapper);
+
+        //如果不能删除，抛出一个业务异常
+        if (count > 0) {
+            throw new CustomException("菜品正在售卖中,不能删除");
+        }
+
+        //如果可以删除，先清理当前菜品数据--dish表的delete操作
+        boolean removeDishes = this.remove(dishLambdaQueryWrapper);
 
         //清理当前菜品对应口味数据--dish_flavor表的delete操作
-        LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DishFlavor::getDishId, id);
+        LambdaQueryWrapper<DishFlavor> dishFlavorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dishFlavorLambdaQueryWrapper.in(DishFlavor::getDishId, ids);
+        boolean removeDishFlavors = dishFlavorService.remove(dishFlavorLambdaQueryWrapper);
 
-        dishFlavorService.remove(queryWrapper);
-
-        return super.removeById(id);
+        return removeDishes && removeDishFlavors;
     }
 }

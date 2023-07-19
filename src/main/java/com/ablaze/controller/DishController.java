@@ -116,6 +116,7 @@ public class DishController {
 
     /**
      * 更新菜品信息及口味信息
+     *
      * @param dishDto
      * @return
      */
@@ -128,6 +129,7 @@ public class DishController {
 
     /**
      * 根据id修改菜品的状态status(停售和起售)
+     *
      * @param status 0停售，1起售。
      * @param ids
      * @return
@@ -143,21 +145,43 @@ public class DishController {
             flag = dishService.updateById(dish);
         }
 
-        return flag ? R.success("修改状态成功") : R.error("修改状态失败");
+        return flag ? R.success("修改菜品状态成功") : R.error("修改菜品状态失败");
     }
 
     /**
      * 删除菜品信息及口味信息
+     *
      * @param ids
      * @return
      */
     @DeleteMapping()
-    public R<String> delete(Long[] ids) {
+    public R<String> delete(@RequestParam List<Long> ids) {
         log.info("根据id删除菜品的id为:{}", ids);
-        boolean flag = false;
-        for (Long id : ids) {
-            flag = dishService.remove(id);
-        }
+
+        boolean flag = dishService.deleteWithFlavor(ids);
+
         return flag ? R.success("修改删除成功") : R.error("修改删除失败");
+    }
+
+    /**
+     * 根据条件查询对应的菜品数据
+     *
+     * @param dish
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish) {
+        //构造查询条件
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        //添加条件，查询状态为1(起售状态)的菜品
+        queryWrapper.eq(Dish::getStatus, 1);
+        //添加排序条件
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(queryWrapper);
+        if (list != null) {
+            return R.success(list);
+        }
+        return R.error("查询到菜品数据失败");
     }
 }

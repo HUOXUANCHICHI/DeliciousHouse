@@ -50,6 +50,6 @@ public class DishFlavor implements Serializable {
     /**
      * 是否删除
      */
-//    private Integer isDeleted;
+    private Integer isDeleted;
 
 }

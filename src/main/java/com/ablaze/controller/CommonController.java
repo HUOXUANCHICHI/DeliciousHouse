@@ -27,8 +27,11 @@ import java.util.UUID;
 @Slf4j
 public class CommonController {
 
-    @Value("${customfile.path}")
-    private String basePath;
+    @Value("${customfile.relativePath}")
+    private String relativeBasePath;
+
+    /*@Value("${customfile.absolutePath}")
+    private String absoluteBasePath;*/
 
     /**
      * 文件上传
@@ -50,15 +53,22 @@ public class CommonController {
         String fileName = UUID.randomUUID() + suffix;
 
         //创建一个目录对象
-        File dir = new File(basePath);
+        File dir = new File(relativeBasePath);
         //判断当前目录是否存在
         if (!dir.exists()) {
             //目录不存在，需要创建
             dir.mkdirs();
         }
         try {
+            //使用相对路径时,获取真实路径
+            String realPath = dir.getCanonicalPath();
             //将临时文件转存到指定位置
-            file.transferTo(new File(basePath + fileName));
+            File finalName = new File(realPath + "/" + fileName);
+
+            //使用绝对路径时
+//            File finalName = new File(relativeBasePath + fileName);
+            log.info("临时文件转存位置:" + finalName);
+            file.transferTo(finalName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,14 +85,14 @@ public class CommonController {
     public void download(String name, HttpServletResponse response) {
         try {
             //输入流，通过输入流读取文件内容
-            FileInputStream fileInputStream = new FileInputStream(new File(basePath + name));
+            FileInputStream fileInputStream = new FileInputStream(relativeBasePath + name);
 
             //输出流，通过输出流文件写回浏览器，在浏览器展示图片了
             ServletOutputStream outputStream = response.getOutputStream();
 
             response.setContentType("image/jpeg");
 
-            int len = 0;
+            int len;
             byte[] bytes = new byte[1024];
             while ((len = fileInputStream.read(bytes)) != -1) {
                 outputStream.write(bytes, 0, len);
